@@ -1,0 +1,12 @@
+#!/bin/bash
+
+export TV_MAC="B0:37:95:4F:22:EC"
+export TV_IP="192.168.1.12"
+export BROADCAST_IP="255.255.255.255"
+export TOPIC_PREFIX="lgtv"
+export MQTT_HOST="192.168.1.10:1883"
+export MQTT_NAME="lgtv2mqtt"
+export CLIENT_KEY_PATH="~/lgkey/"
+export LOG_PATH="/var/log"
+
+node app/index.js

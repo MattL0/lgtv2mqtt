@@ -265,13 +265,17 @@ lgtv.on('connect', () => {
 
     lgtv.subscribe('ssap://audio/getVolume', (err, response) => {
         logging.info('audio/getVolume', err, response);
-        if (response.changed.includes('volume')) {
-            mqtt.publish(topicPrefix + '/status/volume', String(response.volume), mqttOptions);
-        }
+        if (response.volumeStatus) {
+            if (response.volumeStatus.volume) {
+                mqtt.publish(topicPrefix + '/status/volume', String(response.volumeStatus.volume), mqttOptions);
+            }
 
-        if (response.changed.includes('muted')) {
-            mqtt.publish(topicPrefix + '/status/mute', response.muted ? '1' : '0', mqttOptions);
+            if (response.volumeStatus.muteStatus) {
+                mqtt.publish(topicPrefix + '/status/mute', response.volumeStatus.muteStatus ? '1' : '0', mqttOptions);
+            }
         }
+        else
+            logging.error("Response different" + JSON.stringify(response));
     });
 
     lgtv.subscribe('ssap://com.webos.applicationManager/getForegroundAppInfo', (err, response) => {
