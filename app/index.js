@@ -17,7 +17,7 @@ const tvIP = process.env.TV_IP;
 const broadcastIP = process.env.BROADCAST_IP;
 const clientKeyPath = process.env.CLIENT_KEY_PATH || '/usr/node_app/lgkey/';
 
-const mqttOptions = {retain: true, qos: 1};
+const mqttOptions = {retain: false, qos: 0};
 const topicPrefix = process.env.TOPIC_PREFIX;
 
 if (_.isNil(topicPrefix)) {
@@ -33,7 +33,7 @@ const mqtt = mqttHelpers.setupClient(() => {
     mqtt.publish(topicPrefix + '/connected', tvConnected ? '1' : '0', mqttOptions);
 
     logging.info('mqtt subscribe', topicPrefix + '/set/#');
-    mqtt.subscribe(topicPrefix + '/set/#', {qos: 1});
+    mqtt.subscribe(topicPrefix + '/set/#', {qos: 0});
 }, () => {
     if (mqttConnected) {
         mqttConnected = false;
@@ -266,19 +266,15 @@ lgtv.on('connect', () => {
     lgtv.subscribe('ssap://audio/getVolume', (err, response) => {
         logging.info('audio/getVolume', err, response);
         if (response.volumeStatus) {
-            if (response.volumeStatus.volume) {
                 mqtt.publish(topicPrefix + '/status/volume', String(response.volumeStatus.volume), mqttOptions);
-            }
-
-            if (response.volumeStatus.muteStatus) {
-                mqtt.publish(topicPrefix + '/status/mute', response.volumeStatus.muteStatus ? '1' : '0', mqttOptions);
+                mqtt.publish(topicPrefix + '/status/mute', Stringresponse.volumeStatus.muteStatus), mqttOptions);
             }
         }
         else
             logging.error("Response different" + JSON.stringify(response));
     });
 
-    lgtv.subscribe('ssap://com.webos.applicationManager/getForegroundAppInfo', (err, response) => {
+    lgtv.subscribe('luna://com.webos.applicationManager/getForegroundAppInfo', (err, response) => {
         logging.info('getForegroundAppInfo', err, response);
         mqtt.publish(topicPrefix + '/status/foregroundApp', String(response.appId), mqttOptions);
 
