@@ -267,9 +267,8 @@ lgtv.on('connect', () => {
         logging.info('audio/getVolume', err, response);
         if (response.volumeStatus) {
                 mqtt.publish(topicPrefix + '/status/volume', String(response.volumeStatus.volume), mqttOptions);
-                mqtt.publish(topicPrefix + '/status/mute', Stringresponse.volumeStatus.muteStatus), mqttOptions);
+                mqtt.publish(topicPrefix + '/status/mute', String(response.volumeStatus.muteStatus), mqttOptions);
             }
-        }
         else
             logging.error("Response different" + JSON.stringify(response));
     });
