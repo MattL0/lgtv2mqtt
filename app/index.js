@@ -104,12 +104,6 @@ mqtt.on('message', (inTopic, inPayload) => {
                     break;
                 }
 
-                case 'input': {
-                    logging.info(`lg > ssap://tv/switchInput:${JSON.stringify({inputId: String(payload)})}`);
-                    lgtv.request('ssap://tv/switchInput', {inputId: String(payload)});
-                    break;
-                }
-
                case 'launch': {
                     try {
                         logging.info(`lg > ssap://com.webos.applicationManager/launch:${payload}`);
