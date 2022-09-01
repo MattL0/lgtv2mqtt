@@ -85,20 +85,20 @@ mqtt.on('message', (inTopic, inPayload) => {
         case 'set':
             switch (parts[2]) {
                 case 'toast': {
-                    logging.info(`lg > ssap://system.notifications/createToast:${payload}`);
-                    lgtv.request('ssap://system.notifications/createToast', {message: String(payload)});
+                    logging.info(`lg > ssap://com.webos.notification/createToast:${payload}`);
+                    lgtv.request('ssap://com.webos.notification/createToast', {message: String(payload)});
                     break;
                 }
 
                 case 'volume': {
-                    const volume = Number.parseInt(payload, 10);
-                    logging.info(`lg > ssap://audio/setVolume:${volume}`);
-                    lgtv.request('ssap://audio/setVolume', {volume});
+                    const volume = Number.parseInt(payload);
+                    logging.info(`lg > ssap://com.webos.service.audio/master/setVolume:${volume}`);
+                    lgtv.request('ssap://com.webos.service.audio/master/setVolume', {volume});
                     break;
                 }
 
                 case 'mute': {
-                    const mute = Boolean(!(payload === 'false' || payload === '0'));
+                    const mute = Boolean(payload !== 'false');
                     logging.info(`lg > ssap://audio/setMute:${mute}`);
                     lgtv.request('ssap://audio/setMute', {mute});
                     break;
@@ -110,27 +110,10 @@ mqtt.on('message', (inTopic, inPayload) => {
                     break;
                 }
 
-                case 'launch': {
-                    logging.info(`lg > ssap://system.launcher/launch:${payload}`);
-                    lgtv.request('ssap://system.launcher/launch', {id: String(payload)});
-                    break;
-                }
-
-                case 'system_launch_json': {
-                    try {
-                        logging.info(`lg > ssap://system.launcher/launch:${payload}`);
-                        lgtv.request('ssap://system.launcher/launch', JSON.parse(payload));
-                    } catch (error) {
-                        logging.error(error);
-                    }
-
-                    break;
-                }
-
-                case 'am_launch_json': {
+               case 'launch': {
                     try {
                         logging.info(`lg > ssap://com.webos.applicationManager/launch:${payload}`);
-                        lgtv.request('ssap://com.webos.applicationManager/launch', JSON.parse(payload));
+                        lgtv.request('ssap://com.webos.applicationManager/launch', {id: String(payload)});
                     } catch (error) {
                         logging.error(error);
                     }
@@ -263,13 +246,14 @@ lgtv.on('connect', () => {
     logging.info('tv connected');
     mqtt.publish(topicPrefix + '/connected', '1', mqttOptions);
 
-    lgtv.subscribe('ssap://audio/getVolume', (err, response) => {
-        logging.info('audio/getVolume', err, response);
+    lgtv.subscribe('luna://com.webos.service.audio/master/getVolume', (err, response) => {
+        logging.info('luna://com.webos.service.audio/master/getVolume', err, response);
         if (response.volumeStatus) {
                 mqtt.publish(topicPrefix + '/status/volume', String(response.volumeStatus.volume), mqttOptions);
                 mqtt.publish(topicPrefix + '/status/mute', String(response.volumeStatus.muteStatus), mqttOptions);
+                mqtt.publish(topicPrefix + '/status/soundoutput', String(response.volumeStatus.soundOutput), mqttOptions);
             }
-        else
+             else
             logging.error("Response different" + JSON.stringify(response));
     });
 
