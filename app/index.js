@@ -104,7 +104,7 @@ mqtt.on('message', (inTopic, inPayload) => {
                     break;
                 }
                 
-                case 'SoundOutput': {
+                case 'soundOutput': {
                     logging.info(`lg > luna://com.webos.service.apiadapter/audio/changeSoundOutput:${payload}`);
                     lgtv.request('luna://com.webos.service.apiadapter/audio/changeSoundOutput', {output: String(payload)});
                     break;
