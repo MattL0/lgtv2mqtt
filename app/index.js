@@ -98,9 +98,9 @@ mqtt.on('message', (inTopic, inPayload) => {
                 }
 
                 case 'mute': {
-                    const mute = Boolean(payload !== 'false');
-                    logging.info(`lg > ssap://audio/setMute:${mute}`);
-                    lgtv.request('ssap://audio/setMute', {mute});
+                    const mute = Boolean(!(payload === 'false'));
+                    logging.info(`lg > luna://com.webos.service.apiadapter/audio/setMute:${mute}`);
+                    lgtv.request('luna://com.webos.service.apiadapter/audio/setMute', {mute: Boolean(mute)});
                     break;
                 }
 
@@ -190,7 +190,7 @@ mqtt.on('message', (inTopic, inPayload) => {
                     });
                     break;
                 }
-                    
+
                 case 'youtube': {
                     lgtv.request('ssap://com.webos.applicationManager/launch', payload ? {
                         id: 'youtube.leanback.v4',
@@ -200,6 +200,7 @@ mqtt.on('message', (inTopic, inPayload) => {
                     } : {id: 'youtube.leanback.v4'});
                     break;
                 }
+
 
                 default: {
                     const path = topic.replace(topicPrefix + '/set/', '');
@@ -225,10 +226,10 @@ lgtv.on('connect', () => {
     logging.info('tv connected');
     mqtt.publish(topicPrefix + '/connected', '1', mqttOptions);
 
-    lgtv.subscribe('luna://com.webos.service.audio/master/getVolume', (err, response) => {
-        logging.info('luna://com.webos.service.audio/master/getVolume', err, response);
+    lgtv.subscribe('luna://com.webos.service.apiadapter/audio/getStatus', (err, response) => {
+        logging.info('luna://com.webos.service.apiadapter/audio/getStatus', err, response);
         if (response.volumeStatus) {
-                mqtt.publish(topicPrefix + '/status/volume', Number.parseInt(response.volumeStatus.volume), mqttOptions);
+                mqtt.publish(topicPrefix + '/status/volume', String(response.volumeStatus.volume), mqttOptions);
                 mqtt.publish(topicPrefix + '/status/mute', String(response.volumeStatus.muteStatus), mqttOptions);
                 mqtt.publish(topicPrefix + '/status/soundoutput', String(response.volumeStatus.soundOutput), mqttOptions);
             }
