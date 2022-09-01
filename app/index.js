@@ -190,17 +190,7 @@ mqtt.on('message', (inTopic, inPayload) => {
                     });
                     break;
                 }
-
-                case 'amazon_prime': {
-                    lgtv.request('ssap://system.launcher/launch', {id: 'amazon'});
-                    break;
-                }
-
-                case 'web_video_caster': {
-                    lgtv.request('ssap://system.launcher/launch', {id: 'com.instantbits.cast.webvideo'});
-                    break;
-                }
-
+                    
                 case 'youtube': {
                     lgtv.request('ssap://com.webos.applicationManager/launch', payload ? {
                         id: 'youtube.leanback.v4',
@@ -208,11 +198,6 @@ mqtt.on('message', (inTopic, inPayload) => {
                             contentTarget: `https://www.youtube.com/tv?v=${payload}`
                         }
                     } : {id: 'youtube.leanback.v4'});
-                    break;
-                }
-
-                case 'plex': {
-                    lgtv.request('ssap://system.launcher/launch', {id: 'cdp-30'});
                     break;
                 }
 
@@ -243,7 +228,7 @@ lgtv.on('connect', () => {
     lgtv.subscribe('luna://com.webos.service.audio/master/getVolume', (err, response) => {
         logging.info('luna://com.webos.service.audio/master/getVolume', err, response);
         if (response.volumeStatus) {
-                mqtt.publish(topicPrefix + '/status/volume', String(response.volumeStatus.volume), mqttOptions);
+                mqtt.publish(topicPrefix + '/status/volume', Number.parseInt(response.volumeStatus.volume), mqttOptions);
                 mqtt.publish(topicPrefix + '/status/mute', String(response.volumeStatus.muteStatus), mqttOptions);
                 mqtt.publish(topicPrefix + '/status/soundoutput', String(response.volumeStatus.soundOutput), mqttOptions);
             }
