@@ -103,6 +103,12 @@ mqtt.on('message', (inTopic, inPayload) => {
                     lgtv.request('luna://com.webos.service.apiadapter/audio/setMute', {mute: Boolean(mute)});
                     break;
                 }
+                
+                case 'SoundOutput': {
+                    logging.info(`lg > luna://com.webos.service.apiadapter/audio/changeSoundOutput:${payload}`);
+                    lgtv.request('luna://com.webos.service.apiadapter/audio/changeSoundOutput', {output: String(payload)});
+                    break;
+                }
 
                case 'launch': {
                     try {
@@ -231,7 +237,7 @@ lgtv.on('connect', () => {
         if (response.volumeStatus) {
                 mqtt.publish(topicPrefix + '/status/volume', String(response.volumeStatus.volume), mqttOptions);
                 mqtt.publish(topicPrefix + '/status/mute', String(response.volumeStatus.muteStatus), mqttOptions);
-                mqtt.publish(topicPrefix + '/status/soundoutput', String(response.volumeStatus.soundOutput), mqttOptions);
+                mqtt.publish(topicPrefix + '/status/soundOutput', String(response.volumeStatus.soundOutput), mqttOptions);
             }
              else
             logging.error("Response different" + JSON.stringify(response));
