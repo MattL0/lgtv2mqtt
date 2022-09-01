@@ -20,51 +20,53 @@
 ### Topics subscribed by lgtv2mqtt
 
 
-#### lgtv/set/mute
+#### webos/set/mute
 
 Enable or disable mute. Payload should be one off '0', '1', 'false' and 'true'.
 
-#### lgtv/set/volume
+#### webos/set/volume
 
 Set volume. Expects value between 0 and 100.
 
-#### lgtv/set/toast
+#### webos/set/soundOutput
+
+#### webos/set/toast
 
 Show a Popup Message. Send Message as plain payload string.
 
-#### lgtv/set/launch
+#### webos/set/launch
 
 Lauch an app. Send AppId as plain payload string.
 
-#### lgtv/set/media.controls/play
+#### webos/set/media.controls/play
 
-#### lgtv/set/media.controls/pause
+#### webos/set/media.controls/pause
 
-#### lgtv/set/media.controls/stop
+#### webos/set/media.controls/stop
 
-#### lgtv/set/media.controls/rewind
+#### webos/set/media.controls/rewind
 
-#### lgtv/set/media.controls/fastForward
+#### webos/set/media.controls/fastForward
 
-#### lgtv/set/system/turnOff
+#### webos/set/system/turnOff
 
-#### lgtv/set/com.webos.service.tv.display/set3DOn
+#### webos/set/com.webos.service.tv.display/set3DOn
 
-#### lgtv/set/com.webos.service.tv.display/set3DOff
+#### webos/set/com.webos.service.tv.display/set3DOff
 
-#### lgtv/set/move lgtv/set/drag
+#### webos/set/move lgtv/set/drag
 
 Send coordinates as JSON with attributes dx and dy of type number
 
 Example payload: ```{"dx": 100, "dy": 0}```
 
-#### lgtv/set/scroll
+#### webos/set/scroll
 
 Send coordinates as JSON with attributes dx and dy of type number
 
-#### lgtv/set/click
+#### webos/set/click
 
-#### lgtv/set/button
+#### webos/set/button
 
 Send button as plain string payload
 
@@ -72,40 +74,42 @@ Buttons that are known to work:
 MUTE, RED, GREEN, YELLOW, BLUE, HOME, MENU, VOLUMEUP, VOLUMEDOWN, CC, BACK, UP, DOWN, LEFT, ENTER, DASH, 0-9, EXIT,
 channelup, channeldown, record
                     
-#### lgtv/set/youtube 
+#### webos/set/youtube 
 
 Youtube video ID as payload. Runs youtube app and opens video. If the payload is empty, just launch youtube app.       
                     
-#### lgtv/set/netflix 
+#### webos/set/netflix 
 
 Netflix video ID as payload. Runs netflix app and opens video. If the payload is empty, just launch Netflix app.       
                        
       
-#### lgtv/set/open 
+#### webos/set/open 
 Open URL within browser.
 
-#### lgtv/set/open_max 
+#### webos/set/open_max 
 Open URL within browser and maximise the window.     
 
-#### lgtv/set/power
+#### webos/set/power
 Payload '1' or 'true': Power ON, using Wake on Lan, must set Environment Variables: BROADCAST_IP and TV_MAC  
 Payload '0' or 'false': Power OFF                           
 
 ### topics published by lgtv2mqtt
 
-#### lgtv/status/volume
+#### webos/status/volume
 
 Reports volume changes. Payload is the plain value.
 
-#### lgtv/status/mute
+#### webos/status/mute
 
 Reports mute changes. Payload is 'false' (not muted) or 'true' (muted).
 
-#### lgtv/status/foregroundApp
+#### webos/status/soundOutput
+
+#### webos/status/foregroundApp
 
 Reports which App is currently in foreground. (example Payloads: 'netflix', 'com.webos.app.livetv', 'com.webos.app.hdmi2')
 
-#### lgtv/status/currentChannel
+#### webos/status/currentChannel
 
 Reports current channel if foregroundApp is 'com.webos.app.livetv'. Payload is a JSON String, property val contains the
 channelNumber, underneath 'lgtv' you will find more properties with detailed information.
