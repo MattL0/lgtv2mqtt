@@ -79,19 +79,8 @@ Youtube video ID as payload. Runs youtube app and opens video. If the payload is
 #### lgtv/set/netflix 
 
 Netflix video ID as payload. Runs netflix app and opens video. If the payload is empty, just launch Netflix app.       
-                    
-#### lgtv/set/amazon_prime 
-
-Just launch Amazon Prime app, not sure how to open a content directly on it yet.
-
-#### lgtv/set/plex 
-
-Just launch Plex app, not sure how to open a content directly on it yet.        
-
-#### lgtv/set/web_video_caster 
-
-Just launch Web Video Caster app, not sure how to open a content directly on it yet.        
-
+                       
+      
 #### lgtv/set/open 
 Open URL within browser.
 
