@@ -2,20 +2,7 @@
 
 
 > Interface between LG WebOS Smart TVs and MQTT 📺
-
-
-### Getting started
-
-
-* Install
-
-```npm install -g lgtv2mqtt```
-
-
-* Start 
-
-```lgtv2mqtt --help```  
-
+ 
 
 ### Topics subscribed by lgtv2mqtt
 
@@ -36,7 +23,7 @@ Show a Popup Message. Send Message as plain payload string.
 
 #### webos/set/launch
 
-Lauch an app. Send AppId as plain payload string.
+Lauch an app. Send AppId as plain payload string. (example Payloads: 'netflix', 'com.webos.app.livetv', 'com.webos.app.hdmi2')
 
 #### webos/set/media.controls/play
 
@@ -54,16 +41,6 @@ Lauch an app. Send AppId as plain payload string.
 
 #### webos/set/com.webos.service.tv.display/set3DOff
 
-#### webos/set/move lgtv/set/drag
-
-Send coordinates as JSON with attributes dx and dy of type number
-
-Example payload: ```{"dx": 100, "dy": 0}```
-
-#### webos/set/scroll
-
-Send coordinates as JSON with attributes dx and dy of type number
-
 #### webos/set/click
 
 #### webos/set/button
@@ -72,7 +49,7 @@ Send button as plain string payload
 
 Buttons that are known to work:
 MUTE, RED, GREEN, YELLOW, BLUE, HOME, MENU, VOLUMEUP, VOLUMEDOWN, CC, BACK, UP, DOWN, LEFT, ENTER, DASH, 0-9, EXIT,
-channelup, channeldown, record
+channelup, channeldown, record, and more..
                     
 #### webos/set/youtube 
 
@@ -93,21 +70,6 @@ Open URL within browser and maximise the window.
 Payload '1' or 'true': Power ON, using Wake on Lan, must set Environment Variables: BROADCAST_IP and TV_MAC  
 Payload '0' or 'false': Power OFF                           
 
-### topics published by lgtv2mqtt
-
-#### webos/status/volume
-
-Reports volume changes. Payload is the plain value.
-
-#### webos/status/mute
-
-Reports mute changes. Payload is 'false' (not muted) or 'true' (muted).
-
-#### webos/status/soundOutput
-
-#### webos/status/foregroundApp
-
-Reports which App is currently in foreground. (example Payloads: 'netflix', 'com.webos.app.livetv', 'com.webos.app.hdmi2')
 
 ## License
 
