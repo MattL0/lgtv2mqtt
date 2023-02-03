@@ -4,7 +4,7 @@ const Lgtv = require('lgtv2');
 const pkg = require('../package.json');
 const _ = require('lodash');
 const logging = require('./logging.js');
-const wol = require('wol');
+//const wol = require('wol');
 const mqttHelpers = require('./mqtt-helpers.js');
 
 let mqttConnected;
@@ -42,22 +42,13 @@ const mqtt = mqttHelpers.setupClient(() => {
 });
 
 const powerOff = function () {
-    logging.info('power_off');
-    logging.info('lg > ssap://system/turnOff');
-    lgtv.request('ssap://system/turnOff', null, null);
+    logging.info('power_Off');
+    lgtv.request('luna://com.webos.service.tvpower/power/powerOff', {"reason": "remoteKey"});
 };
 
 const powerOn = function () {
-    logging.info('power_on');
-    wol.wake(tvMAC, {
-        address: broadcastIP
-    }, (err, response) => {
-        logging.info('WOL: ' + response);
-        if (foregroundApp === null) {
-            logging.info('lg > ssap://system/turnOff (to turn it on...)');
-            lgtv.request('ssap://system/turnOff', null, null);
-        }
-    });
+    logging.info('power_On');
+    lgtv.request('luna://com.webos.service.tvpower/power/powerOn', {"reason": "remoteKey"});
 };
 
 const lgtv = new Lgtv({
@@ -97,13 +88,25 @@ mqtt.on('message', (inTopic, inPayload) => {
                     break;
                 }
 
+                case 'volumeDown': {
+                    logging.info(`lg > ssap://com.webos.service.audio/master/volumeDown`);
+                    lgtv.request('ssap://com.webos.service.audio/master/volumeDown', {});
+                    break;
+                }
+
+                case 'volumeUp': {
+                    logging.info(`lg > ssap://com.webos.service.audio/master/volumeUp`);
+                    lgtv.request('ssap://com.webos.service.audio/master/volumeUp', {});
+                    break;
+                }
+
                 case 'mute': {
                     const mute = Boolean(!(payload === 'false'));
                     logging.info(`lg > luna://com.webos.service.apiadapter/audio/setMute:${mute}`);
                     lgtv.request('luna://com.webos.service.apiadapter/audio/setMute', {mute: Boolean(mute)});
                     break;
                 }
-                
+
                 case 'soundOutput': {
                     logging.info(`lg > luna://com.webos.service.apiadapter/audio/changeSoundOutput:${payload}`);
                     lgtv.request('luna://com.webos.service.apiadapter/audio/changeSoundOutput', {output: String(payload)});
@@ -114,37 +117,6 @@ mqtt.on('message', (inTopic, inPayload) => {
                     try {
                         logging.info(`lg > ssap://com.webos.applicationManager/launch:${payload}`);
                         lgtv.request('ssap://com.webos.applicationManager/launch', {id: String(payload)});
-                    } catch (error) {
-                        logging.error(error);
-                    }
-
-                    break;
-                }
-
-                case 'move':
-                case 'drag': {
-                    try {
-                        const jsonPayload = JSON.parse(payload);
-                        // The event type is 'move' for both moves and drags.
-                        sendPointerEvent('move', {
-                            dx: jsonPayload.dx,
-                            dy: jsonPayload.dy,
-                            drag: parts[2] === 'drag' ? 1 : 0
-                        });
-                    } catch (error) {
-                        logging.error(error);
-                    }
-
-                    break;
-                }
-
-                case 'scroll': {
-                    try {
-                        const jsonPayload = JSON.parse(payload);
-                        sendPointerEvent('scroll', {
-                            dx: jsonPayload.dx,
-                            dy: jsonPayload.dy
-                        });
                     } catch (error) {
                         logging.error(error);
                     }
@@ -232,20 +204,8 @@ lgtv.on('connect', () => {
     logging.info('tv connected');
     mqtt.publish(topicPrefix + '/connected', '1', mqttOptions);
 
-    lgtv.subscribe('luna://com.webos.service.apiadapter/audio/getStatus', (err, response) => {
-        logging.info('luna://com.webos.service.apiadapter/audio/getStatus', err, response);
-        if (response.volumeStatus) {
-                mqtt.publish(topicPrefix + '/status/volume', String(response.volumeStatus.volume), mqttOptions);
-                mqtt.publish(topicPrefix + '/status/mute', String(response.volumeStatus.muteStatus), mqttOptions);
-                mqtt.publish(topicPrefix + '/status/soundOutput', String(response.volumeStatus.soundOutput), mqttOptions);
-            }
-             else
-            logging.error("Response different" + JSON.stringify(response));
-    });
 
     lgtv.subscribe('luna://com.webos.applicationManager/getForegroundAppInfo', (err, response) => {
-        logging.info('getForegroundAppInfo', err, response);
-        mqtt.publish(topicPrefix + '/status/foregroundApp', String(response.appId), mqttOptions);
 
         if (!_.isNil(response.appId) && response.appId.length > 0) {
             foregroundApp = response.appId;
@@ -274,9 +234,6 @@ lgtv.on('connect', () => {
         }
     });
 
-    lgtv.subscribe('ssap://tv/getExternalInputList', (err, response) => {
-        logging.info('getExternalInputList', err, response);
-    });
 });
 
 lgtv.on('connecting', host => {
