@@ -37,7 +37,7 @@ const host = process.env.MQTT_HOST;
 const mqttUsername = process.env.MQTT_USER;
 const mqttPassword = process.env.MQTT_PASS;
 const mqttName = process.env.MQTT_NAME;
-const mqttClientId = process.env.MQTT_CLIENT_ID || "lgtv2mqtt";
+const mqttClientId = process.env.MQTT_CLIENT_ID || "webos2mqtt";
 
 let logName = mqttName;
 
@@ -88,7 +88,7 @@ exports.setupClient = function (connectedCallback, disconnectedCallback) {
         publishMap = {};
 
         if (!_.isNil(logName)) {
-            client.publish(fixName('/status/' + logName), '1', {retain: true});
+            client.publish(fixName('/status/' + logName), '1', {retain: false});
         }
 
         if (!_.isNil(connectedCallback)) {
