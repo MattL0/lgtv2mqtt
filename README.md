@@ -109,12 +109,6 @@ Reports mute changes. Payload is 'false' (not muted) or 'true' (muted).
 
 Reports which App is currently in foreground. (example Payloads: 'netflix', 'com.webos.app.livetv', 'com.webos.app.hdmi2')
 
-#### webos/status/currentChannel
-
-Reports current channel if foregroundApp is 'com.webos.app.livetv'. Payload is a JSON String, property val contains the
-channelNumber, underneath 'lgtv' you will find more properties with detailed information.
-
-
 ## License
 
 MIT © [Sebastian Raff](https://github.com/hobbyquaker)
